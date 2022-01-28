@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3500"
+    image: my_app
+    networks:
+      - uvicorn_network
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    depends_on:
+      - app
+    networks:
+      - uvicorn_network
+
+  seeder:
+    build:
+      context: ./seeder
+      dockerfile: Dockerfile
+    networks:
+      - uvicorn_network
+    depends_on:
+      - mongodb
+
+networks:
+  uvicorn_network:
+    driver: bridge
+
